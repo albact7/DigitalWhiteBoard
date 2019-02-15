@@ -30,15 +30,15 @@ int resX = 640;
 int resY = 480;
 
 MouseManager mouseManager;
-static final int waitForClick=3;
+static final int waitForClick=2;
 int click[]=new int [2];
 int numberOfClick=0;
-static final int waitAfterClick=3;
+static final int waitAfterClick=5 ;
 int waitUntilNextClick=waitAfterClick;
 
 
-Board(){
- mouseManager = new MouseManager(); 
+Board(MouseManager mouseManager){
+ this.mouseManager = mouseManager; 
 }
 
 void setupBoard(){
@@ -124,7 +124,6 @@ void paint(int newMouseX, int newMouseY){
          numberOfClick++;
          paint(nearest[0], nearest[1]);
          mouseManager.moveMouse(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
-         println("same");
        }else{
          mouseManager.moveMouse(nearest[0],nearest[1]);
          numberOfClick=0;

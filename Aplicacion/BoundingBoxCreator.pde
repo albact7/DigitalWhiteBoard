@@ -5,19 +5,21 @@ class BoundingBoxCreator {
   PVector bbStartPoint;
   float bbWidth;
   float bbHeight;
+  MouseManager mouseManager;
   
   // creacion de las teclas
   int count = 2;
   boolean step = false;
 
-  BoundingBoxCreator() {
+  BoundingBoxCreator(MouseManager mouseManager) {
     this.createdBoundingBox = false;
     this.bbStartPoint = new PVector(-1, -1);
     this.bbWidth = Float.MIN_VALUE;
     this.bbHeight = Float.MIN_VALUE;
+    this.mouseManager = mouseManager;
   }
   
-  void display() {
+ void display() {
     if (!createdBoundingBox) {
       if (bbStartPoint.x != -1) {
         fill(255, 0, 0);
@@ -44,8 +46,7 @@ class BoundingBoxCreator {
           rect(tempx, tempy, tempWidth, tempHeight);
         }
       }
-    } else { 
-      
+     
     }
   }
 
@@ -67,6 +68,7 @@ class BoundingBoxCreator {
         }
    
         createdBoundingBox = true;
+         setMouseManager();
       }
     }
   }
@@ -75,6 +77,13 @@ class BoundingBoxCreator {
     return this.createdBoundingBox;
   }
   
+  void setMouseManager(){
+    mouseManager.setDefaultResolutionX(int(bbWidth));
+    mouseManager.setDefaultResolutionY(int(bbHeight));
+    mouseManager.setDefaultStartPoint(bbStartPoint);
+    println(bbStartPoint.x);
+    println(bbStartPoint.y);
+  }
   
     
   
