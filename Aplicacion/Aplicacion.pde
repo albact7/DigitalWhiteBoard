@@ -26,6 +26,8 @@ Board board;
 boolean colorSeleccionadoCentro;
 boolean colorSeleccionadoEsquina;
 MouseManager mouseManager;
+Calibrator calibrator;
+boolean readyToCalibrate;
 
 void setup() {
 
@@ -41,9 +43,9 @@ void setup() {
   mouseManager = new MouseManager();
   bbCreator = new BoundingBoxCreator(mouseManager);
   scolor= new SeleccionColor(width*0.93, height*0.1,width*0.09);
+  calibrator = new Calibrator(mouseManager);
   
   video.start();
-  println("1");
 
   
   this.inicio_captura_x = width / 2 - 320;
@@ -59,35 +61,41 @@ void setup() {
 
 
 void draw() {
-
+  background(255,255,255);
   if (bbCreator.isDone()) {
   // opencv.loadImage(video);
-   if(colorSeleccionadoCentro && colorSeleccionadoEsquina){
-      board.compruebaPie(video); 
-   }else{
+   if(colorSeleccionadoCentro && colorSeleccionadoEsquina && calibrator.isCalibrated()){
+     image(video, 0, 0);
+      //board.clickOnRed(video); 
+   }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
       image(video, 0, 0);
+      textSize(100);
+      text("selecciona color",width/5, 2*height/3);
+   }else if(!calibrator.isCalibrated()){
+     image(video, 0, 0);
+     if(readyToCalibrate){
+       calibrator.displayCalibrationScreen();
+       board.whereIsRed(video);  
+     }else{
+       text("press c to calibrate",width/5, 2*height/3);
+     }
    }
   }else {
       background(127,127,127);
       image(video, 0, 0); 
       bbCreator.display();
-    }
-
+  }
+  
 }
 
 
 
 void keyPressed() {
-  if (keyCode == DOWN) {
-    indexInstrumento = indexInstrumento == 0 ? instrumentos.length - 1 : --indexInstrumento;
-  } else if (keyCode == UP){
-    indexInstrumento = (indexInstrumento == instrumentos.length - 1) ? 0 : ++indexInstrumento;    
-  }
-  
-  if (keyCode == UP || keyCode == DOWN) {
-    sc.instrument(instrumentos[indexInstrumento]); 
-    println(instrumentos[indexInstrumento]);
-  }
+  if (key == 'c') {
+     
+     println("Calibrating");
+     readyToCalibrate=true;
+  } 
 }
 
 void mouseClicked()
@@ -109,6 +117,10 @@ void mouseClicked()
   }else{
     bbCreator.onMouseClick();
   }
+  if(!calibrator.isCalibrated()&&readyToCalibrate){
+       calibrator.onMouseClick(board.getLastRed());
+  }
+  
 }
 
 void captureEvent(Capture c) {

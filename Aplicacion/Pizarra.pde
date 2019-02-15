@@ -36,9 +36,14 @@ int numberOfClick=0;
 static final int waitAfterClick=5 ;
 int waitUntilNextClick=waitAfterClick;
 
+PVector lastRed;
 
 Board(MouseManager mouseManager){
  this.mouseManager = mouseManager; 
+}
+
+MouseManager getMouseManager(){
+   return mouseManager; 
 }
 
 void setupBoard(){
@@ -75,8 +80,15 @@ void paint(int newMouseX, int newMouseY){
 }
   
   
- public void compruebaPie(Capture video) {
-       selectedPoints = new int[640*2][3];
+ public PVector clickOnRed(Capture video) {
+       
+      mouseManager.moveMouse(whereIsRed(video));
+     
+      return null;
+ }
+ 
+ public PVector whereIsRed(Capture video) {
+     selectedPoints = new int[640*2][3];
        selectedColors = new int[640*2];
         int nearest[] = new int [2];
         float smallestDif=1000;
@@ -115,26 +127,28 @@ void paint(int newMouseX, int newMouseY){
           
          }
        }
+      
      }
-     
      if(painted){
        
        if( mouseManager.samePlace(nearest[0], nearest[1], click)){
          
          numberOfClick++;
          paint(nearest[0], nearest[1]);
-         mouseManager.moveMouse(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
+         lastRed = new PVector(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
+         return lastRed;
        }else{
-         mouseManager.moveMouse(nearest[0],nearest[1]);
          numberOfClick=0;
          click[0]=nearest[0];
          click[1]=nearest[1];
+         lastRed = new PVector(nearest[0],nearest[1]);
+         return lastRed;
        }
-       
+       /**
        if(numberOfClick==waitForClick){
          doTheClick();
          numberOfClick =0;
-       }
+       }**/
        
        /**
        if(numberOfClick==0){
@@ -157,6 +171,11 @@ void paint(int newMouseX, int newMouseY){
        }
       **/
      }
+     return null;
+ }
+ 
+ PVector getLastRed(){
+    return this.lastRed; 
  }
  
  void doTheClick(){

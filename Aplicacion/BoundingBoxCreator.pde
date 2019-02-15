@@ -81,7 +81,7 @@ class BoundingBoxCreator {
     mouseManager.setDefaultResolutionX(int(bbWidth));
     mouseManager.setDefaultResolutionY(int(bbHeight));
     mouseManager.setDefaultStartPoint(bbStartPoint);
-    println(bbStartPoint.x);
+    println("Start Point "+bbStartPoint.x);
     println(bbStartPoint.y);
   }
   
