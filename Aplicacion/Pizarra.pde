@@ -136,14 +136,20 @@ void paint(int newMouseX, int newMouseY){
          numberOfClick++;
          paint(nearest[0], nearest[1]);
          lastRed = new PVector(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
-         return lastRed;
+        
        }else{
          numberOfClick=0;
          click[0]=nearest[0];
          click[1]=nearest[1];
+         paint(nearest[0], nearest[1]);
          lastRed = new PVector(nearest[0],nearest[1]);
-         return lastRed;
+         
        }
+       if(numberOfClick==waitForClick){
+         doTheClick();
+         numberOfClick =0;
+       }
+       return lastRed;
        /**
        if(numberOfClick==waitForClick){
          doTheClick();
@@ -181,6 +187,7 @@ void paint(int newMouseX, int newMouseY){
  void doTheClick(){
    if(waitUntilNextClick==waitAfterClick){
      mouseManager.clickMouse();
+     println("click");
      waitUntilNextClick=0;
    }
    waitUntilNextClick++;

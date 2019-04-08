@@ -28,6 +28,7 @@ boolean colorSeleccionadoEsquina;
 MouseManager mouseManager;
 Calibrator calibrator;
 boolean readyToCalibrate;
+List<CalibPoint> cb ;
 
 void setup() {
 
@@ -56,17 +57,50 @@ void setup() {
 
   colorSeleccionadoCentro=false;
   colorSeleccionadoEsquina=false;
+  cb = new ArrayList<CalibPoint>();
+  createPoints();
+ 
 }
+
+// Points to draw
+CalibPoint pointA; // Up left point
+CalibPoint pointB; // Up right point
+CalibPoint pointC; // Dpwn left point
+CalibPoint pointD; // Down right point
+Dimension screenSize;
+int screenWidth;
+int screenHeight;
+void createPoints(){
+     
+    this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    this.screenWidth = (int) screenSize.getWidth();
+    this.screenHeight = (int) screenSize.getHeight();
+    pointA = new CalibPoint(new PVector(screenWidth/4, screenHeight/4));
+    pointB = new CalibPoint(new PVector(screenWidth*3/4, screenHeight/4));
+    pointC = new CalibPoint(new PVector(screenWidth/4, screenHeight*3/4));
+    pointD = new CalibPoint(new PVector(screenWidth*3/4, screenHeight*3/4));
+    
+    cb.add(pointA);
+    cb.add(pointB);
+    cb.add(pointC);
+    cb.add(pointD);
+    
+  }
 
 
 
 void draw() {
+  /**
   background(255,255,255);
   if (bbCreator.isDone()) {
   // opencv.loadImage(video);
    if(colorSeleccionadoCentro && colorSeleccionadoEsquina && calibrator.isCalibrated()){
      image(video, 0, 0);
-      //board.clickOnRed(video); 
+      board.clickOnRed(video); 
+      text("ejecutando",width/5, 2*height/3);
+      
+      
+      
    }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
       image(video, 0, 0);
       textSize(100);
@@ -86,6 +120,34 @@ void draw() {
       bbCreator.display();
   }
   
+  strokeWeight(40);
+    stroke(color(255, 0, 0));
+  for(CalibPoint p : cb){
+        point(p.getCoordinates().x, p.getCoordinates().y); 
+      }
+  **/
+  
+    background(255,255,255);
+  if (bbCreator.isDone()) {
+  // opencv.loadImage(video);
+   if(colorSeleccionadoCentro && colorSeleccionadoEsquina){
+      board.clickOnRed(video); 
+      text("ejecutando",width/5, 2*height/3);
+      
+      
+      
+   }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
+      image(video, 0, 0);
+      textSize(100);
+      text("selecciona color",width/5, 2*height/3);
+   }
+   
+  }else {
+      background(127,127,127);
+      image(video, 0, 0); 
+      bbCreator.display();
+  }
+
 }
 
 

@@ -35,7 +35,7 @@ boolean calibrated;
     pointsList.add(pointC);
     pointsList.add(pointD);
     
-    
+    mouseManager.setRealPoints(pointsList);
   }
   
   void displayCalibrationScreen(){
@@ -53,6 +53,11 @@ boolean calibrated;
     
   }
   
+  List<CalibPoint> getCalibPoints(){
+     return this.getCalibPoints(); 
+  }
+  
+  
   boolean isCalibrated(){
      return calibrated; 
   }
@@ -62,9 +67,11 @@ boolean calibrated;
        if(!pointsList.get(i).isClicked()){
          mouseManager.setRefPoints(i, foundRed);
          pointsList.get(i).setClicked(true);
-         if(i==pointsList.size()-1) calibrated=true;
-        // displayOK();
-        println("Calibrated");
+         if(i==pointsList.size()-1) {
+           calibrated=true;
+           displayOK();
+           mouseManager.calculateError();
+         }
          break;
        }
        
