@@ -7,9 +7,6 @@ class BoundingBoxCreator {
   float bbHeight;
   MouseManager mouseManager;
   
-  // creacion de las teclas
-  int count = 2;
-  boolean step = false;
 
   BoundingBoxCreator(MouseManager mouseManager) {
     this.createdBoundingBox = false;
@@ -68,7 +65,7 @@ class BoundingBoxCreator {
         }
    
         createdBoundingBox = true;
-         setMouseManager();
+        setMouseManager();
       }
     }
   }

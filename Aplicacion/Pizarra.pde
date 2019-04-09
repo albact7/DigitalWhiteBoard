@@ -46,34 +46,17 @@ MouseManager getMouseManager(){
    return mouseManager; 
 }
 
-void setupBoard(){
-   
-  
-/*  strokeWeight(20);
-  stroke(color(0,0,0,128));
-  
-  fill(color(255,0,0));
-  ellipse(150,150,150,150);
-  
-  fill(color(255,255,0,128));
-  ellipse(200,200,150,150);*/
-  
-  oldMouseX=0;
-  oldMouseY=0;
-  
+void setupBoard(){  
+  this.oldMouseX=0;
+  this.oldMouseY=0;
 }
 
 void paint(int newMouseX, int newMouseY){
   noStroke();
+  strokeWeight(strokeW);
+  stroke(paleta[colorActual]);
  
- 
-
-
-    strokeWeight(strokeW);
-    stroke(paleta[colorActual]);
-    //line(oldMouseX,oldMouseY,newMouseX,newMouseY);
-   point(newMouseX,newMouseY);
-
+  point(newMouseX,newMouseY);
 
   oldMouseX=newMouseX;
   oldMouseY=newMouseY; 
@@ -81,101 +64,49 @@ void paint(int newMouseX, int newMouseY){
   
   
  public PVector clickOnRed(Capture video) {
-       
-      mouseManager.moveMouse(whereIsRed(video));
-     
-      return null;
+    mouseManager.moveMouse(whereIsRed(video));
+    return null;
  }
  
  public PVector whereIsRed(Capture video) {
-     selectedPoints = new int[640*2][3];
-       selectedColors = new int[640*2];
-        int nearest[] = new int [2];
-        float smallestDif=1000;
-       boolean painted = false;
-     for (int x = 0; x < 640; x++) {
-       for (int y = 0; y < 480; y++) {
-         int offsetX = width + x - (width / 2 - 320);
-         int offsetY = height + y - (640/2 - 240);
+    selectedPoints = new int[640*2][3];
+    selectedColors = new int[640*2];
+    int nearest[] = new int [2];
+    float smallestDif=1000;
+    boolean painted = false;
+    for (int x = 0; x < 640; x++) {
+      for (int y = 0; y < 480; y++) {
          int numberPix=640*y + x;
          color pixelValue = video.pixels[numberPix];
          // Determine the color of the pixel
-         if (sonProximos(red(pixelValue), red(this.colorDeteccionCentro)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionCentro)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionCentro))
-             || ( sonProximos(red(pixelValue), red(this.colorDeteccionEsquina)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionEsquina)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionEsquina))))
-          {
-            //paint(x, y);
-            //println("r: " + red(colorDeteccion) + " - g: " + green(colorDeteccion) + " - b: " + blue(colorDeteccion));
-            //println("r: " + red(pixelValue) + " - g: " + green(pixelValue) + " - b: " + blue(pixelValue));
-           
-           // if(centerRed(video, numberPix)){
-          
+         if (areAllNear(pixelValue)){
             if(calculateDifference(pixelValue)<smallestDif){
               painted=true;
               smallestDif = calculateDifference(pixelValue);
               nearest[0]=x;
               nearest[1]=y;              
             }
-            
-           
             point++;
-             
-           //paint(x, y);
-           //int pixel=640*y + x;
-           
-          
          }
-       }
-      
-     }
+      }
+    }
      if(painted){
-       
        if( mouseManager.samePlace(nearest[0], nearest[1], click)){
-         
          numberOfClick++;
          paint(nearest[0], nearest[1]);
-         lastRed = new PVector(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
-        
+         lastRed = new PVector(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1])); 
        }else{
          numberOfClick=0;
          click[0]=nearest[0];
          click[1]=nearest[1];
          paint(nearest[0], nearest[1]);
          lastRed = new PVector(nearest[0],nearest[1]);
-         
        }
        if(numberOfClick==waitForClick){
          doTheClick();
          numberOfClick =0;
        }
-       return lastRed;
-       /**
-       if(numberOfClick==waitForClick){
-         doTheClick();
-         numberOfClick =0;
-       }**/
-       
-       /**
-       if(numberOfClick==0){
-       click[0]=nearest[0];
-       click[1]=nearest[1];
-       mouseManager.moveMouse(nearest[0],nearest[1]);
-       }
-       
-       if( mouseManager.samePlace(nearest[0], nearest[1], click) && numberOfClick==waitForClick){
-          mouseManager.clickMouse();
-         numberOfClick =0;
-         paint(nearest[0], nearest[1]);
-         mouseManager.moveMouse(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
-       }else if( mouseManager.samePlace(nearest[0], nearest[1], click)){
-         numberOfClick++;
-         mouseManager.moveMouse(getCoordinateClose(click[0],nearest[0]),getCoordinateClose(click[1],nearest[1]));
-       }else{
-         numberOfClick=0;
-         mouseManager.moveMouse(nearest[0],nearest[1]);
-       }
-      **/
+       return lastRed;      
      }
      return null;
  }
@@ -206,7 +137,6 @@ void paint(int newMouseX, int newMouseY){
       if(!(areSimilar(video, nPix-i)&&areSimilar(video, nPix+i)&&areSimilar(video, (nPix-i)-resX*i)&&areSimilar(video, nPix+i+resX*i)))
           return false;
     }
-
     return true;
  }
  
@@ -214,22 +144,20 @@ void paint(int newMouseX, int newMouseY){
    int nearest[] = new int [2];
    float smallestDif=1000;
    for(int i =0; i<selectedPoints.length; i++){
-      if(calculateDifference(selectedColors[i])<smallestDif){
-        
+      if(calculateDifference(selectedColors[i])<smallestDif){  
         smallestDif = calculateDifference(selectedColors[i]);
         nearest[0]=selectedPoints[i][0];
         nearest[1]=selectedPoints[i][1];
-       
       }
    }
    return nearest;
  }
  
  float calculateDifference(color pixelValue){
-  float difRed =max(abs(red(this.colorDeteccionCentro)-red(pixelValue)),abs(red(this.colorDeteccionEsquina)-red(pixelValue)));
-  float difGreen =max(abs(green(this.colorDeteccionCentro)-green(pixelValue)),abs(green(this.colorDeteccionEsquina)-green(pixelValue)));
-  float difBlue =max(abs(blue(this.colorDeteccionCentro)-blue(pixelValue)),abs(blue(this.colorDeteccionEsquina)-blue(pixelValue)));
-  return difRed+difGreen+difBlue;
+    float difRed =max(abs(red(this.colorDeteccionCentro)-red(pixelValue)),abs(red(this.colorDeteccionEsquina)-red(pixelValue)));
+    float difGreen =max(abs(green(this.colorDeteccionCentro)-green(pixelValue)),abs(green(this.colorDeteccionEsquina)-green(pixelValue)));
+    float difBlue =max(abs(blue(this.colorDeteccionCentro)-blue(pixelValue)),abs(blue(this.colorDeteccionEsquina)-blue(pixelValue)));
+    return difRed+difGreen+difBlue;
  }
  
  void setColorDeteccionCentro(color nuevoColor) {
@@ -243,6 +171,13 @@ void paint(int newMouseX, int newMouseY){
  
  boolean sonProximos(float color1, float color2){
    return (color1<color2 + 4 && color1 > color2 - 4);
+ }
+ 
+ boolean areAllNear(int pixelValue){
+   return sonProximos(red(pixelValue), red(this.colorDeteccionCentro)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionCentro)) && 
+             sonProximos(green(pixelValue), green(this.colorDeteccionCentro))
+             || ( sonProximos(red(pixelValue), red(this.colorDeteccionEsquina)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionEsquina)) && 
+             sonProximos(green(pixelValue), green(this.colorDeteccionEsquina)));
  }
  
  boolean areSimilar(Capture video, int nPix){
