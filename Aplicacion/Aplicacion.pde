@@ -132,6 +132,7 @@ void mouseClicked()
       }
   }else{
     bbCreator.onMouseClick(); // Create bounding box
+    board.setConstants();
   }
   
 }

@@ -40,6 +40,14 @@ SoundCipher sc;
     this.defaultResolutionY=y;
  }
  
+ int getDefaultResolutionX(){
+    return this.defaultResolutionX;
+ }
+  
+ int getDefaultResolutionY(){
+    return this.defaultResolutionY;
+ }
+ 
 PVector getCamResolution(){
    return new PVector(defaultResolutionX, defaultResolutionY);
 }

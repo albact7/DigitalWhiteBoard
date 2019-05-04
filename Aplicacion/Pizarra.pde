@@ -3,8 +3,10 @@ import java.awt.event.InputEvent;
 import java.util.Random;
 class Board{
   
-static final int defaultResolutionX = 640;
-static final int defaultResolutionY = 480;
+int resolutionX = 640;
+int resolutionY = 480;
+PVector startPoint;
+
 
 float oldMouseX,oldMouseY;
 
@@ -40,10 +42,26 @@ PVector lastRed;
 
 Board(MouseManager mouseManager){
  this.mouseManager = mouseManager; 
+ setConstants();
 }
 
 MouseManager getMouseManager(){
    return mouseManager; 
+}
+
+void setConstants(){
+  this.resolutionX = this.mouseManager.getDefaultResolutionX();
+  this.resolutionY = this.mouseManager.getDefaultResolutionY();
+  this.startPoint = this.mouseManager.getStartPoint();
+}
+
+boolean isInsideBB(int x, int y){
+  return (
+    (this.startPoint.x <= x) && (x <= (this.startPoint.x + this.resolutionX))
+    &&
+    (this.startPoint.y <= y) && (y <= (this.startPoint.y + this.resolutionY))
+  );
+  
 }
 
 void setupBoard(){  
@@ -90,6 +108,7 @@ void paint(int newMouseX, int newMouseY){
          }
       }
     }
+     if(isInsideBB(nearest[0], nearest[1])){
      if(painted){
        if( mouseManager.samePlace(nearest[0], nearest[1], click)){
          numberOfClick++;
@@ -107,6 +126,7 @@ void paint(int newMouseX, int newMouseY){
          numberOfClick =0;
        }
        return lastRed;      
+     }
      }
      return null;
  }
@@ -128,7 +148,7 @@ void paint(int newMouseX, int newMouseY){
  }
  
  boolean isInCorner(int x, int y){
-    return  (x <= defaultResolutionX/6) && (x >= defaultResolutionX*5/6) && (y <= defaultResolutionY/6) && (y >= defaultResolutionY*5/6);
+    return  (x <= resolutionX/6) && (x >= resolutionX*5/6) && (y <= resolutionY/6) && (y >= resolutionY*5/6);
  }
  
  boolean centerRed(Capture video, int nPix){
