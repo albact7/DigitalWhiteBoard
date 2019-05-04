@@ -60,7 +60,7 @@ void setup() {
   
   this.borderI = loadImage("data/border.png");
   this.borderI.resize(788,0);
-  this.backgroundI = loadImage("data/paredC2.png");
+  this.backgroundI = loadImage("data/wall.png");
   this.backgroundI.resize(width,0);
 }
 
@@ -80,8 +80,8 @@ void createPoints(){
 
 void draw() {
   background(255,255,255);
-  image(this.borderI, 0, 0);
   image(this.backgroundI, 0, 0);
+  image(this.borderI, 0, 0);
   buttonEvent();
   buttonHide();
   if (bbCreator.isDone()) { // If bounding box is defined
@@ -129,7 +129,8 @@ void helpColor(){
     textSize(60);
     text("1. place in front your webcam your pointer with the color you want",130, 830);
     text("2. click to select the color to recognize as the mouse",130, 900);
-    text("3. you will have to do 2. twice, so try to move your pointer to a darker or lighter place",130, 970);
+    text("3. you will have to do 2. twice, so try to move your pointer",130, 970);
+    text("to a darker or lighter place",150, 1040);
 }
 
 void keyPressed() {
