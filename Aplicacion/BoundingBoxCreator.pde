@@ -74,6 +74,13 @@ class BoundingBoxCreator {
     return this.createdBoundingBox;
   }
   
+  void setNotCreatedBoundingBox(){
+    this.createdBoundingBox = false;
+    this.bbStartPoint = new PVector(-1, -1);
+    this.bbWidth = Float.MIN_VALUE;
+    this.bbHeight = Float.MIN_VALUE;
+  }
+  
   void setMouseManager(){
     mouseManager.setDefaultResolutionX(int(bbWidth));
     mouseManager.setDefaultResolutionY(int(bbHeight));

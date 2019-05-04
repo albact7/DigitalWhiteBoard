@@ -118,7 +118,6 @@ void paint(int newMouseX, int newMouseY){
  void doTheClick(){
    if(waitUntilNextClick==waitAfterClick){
      mouseManager.clickMouse();
-     println("click");
      waitUntilNextClick=0;
    }
    waitUntilNextClick++;

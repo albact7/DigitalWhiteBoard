@@ -18,6 +18,9 @@ boolean colorSeleccionadoCentro;
 boolean colorSeleccionadoEsquina;
 MouseManager mouseManager;
 
+ToggleButton soundTg;
+Button bboxBt;
+
 void setup() {
 
   fullScreen();
@@ -42,7 +45,8 @@ void setup() {
   colorSeleccionadoCentro=false;
   colorSeleccionadoEsquina=false;
 
- 
+  this.soundTg = new ToggleButton(this, "Sound ON", "Sound OFF", true, width*0.8,height*0.5, 200,100);
+  this.bboxBt = new Button(this, "Create bounding box", true, width*0.8,height*0.2, 200,200, width*0.75);
 }
 
 Dimension screenSize;
@@ -60,36 +64,54 @@ void createPoints(){
 
 
 void draw() {
-  
-  background(255,255,255);
+  background(0,0,0);
+  buttonEvent();
+  buttonHide();
   if (bbCreator.isDone()) { // If bounding box is defined
      opencv.loadImage(video);
      if(colorSeleccionadoCentro && colorSeleccionadoEsquina){ // If center and corner color are selected, ready to run
+        image(video, 0, 0);
         board.clickOnRed(video); 
-        text("running",width/5, 2*height/3);     
+        fill(255, 255, 255);
+        text("running",width/5, 2*height/3); 
+        buttonShow();
      }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
         image(video, 0, 0);
         textSize(100);
-        text("selectColor",width/5, 2*height/3);
+        fill(255, 255, 255);
+        if(!colorSeleccionadoCentro){
+          text("select color inside box",width/5, 2*height/3);
+        }else{
+          text("select color once more",width/5, 2*height/3); 
+        }
      }
   }else { // If bounding box is not defined, create it
-      background(127,127,127);
-      image(video, 0, 0); 
-      bbCreator.display();
+     // background(255,255,255);
+    fill(255, 255, 255);
+    textSize(100);
+    text("create bounding box",width/5, 2*height/3);
+    image(video, 0, 0); 
+    bbCreator.display();
+  
   }
 
 }
 
-/**
+
 
 void keyPressed() {
-  if (key == 'c') {
-     
-     println("Calibrating");
-     readyToCalibrate=true;
+  if (key == 'c') { // Select colors again
+     colorSeleccionadoCentro = false;
+     colorSeleccionadoEsquina = false;     
   } 
+  if (key == 'b'){
+     bbCreator.setNotCreatedBoundingBox(); 
+  }
+  if (key == 's'){
+     mouseManager.setSoundOn();
+  }
 }
-**/
+
 
 void mouseClicked()
 {
@@ -113,6 +135,28 @@ void mouseClicked()
   }
   
 }
+
+void buttonHide(){
+  this.soundTg.hide();
+  this.bboxBt.hide();
+}
+
+void buttonShow(){
+  this.soundTg.show();
+  this.bboxBt.show();
+}
+
+void buttonEvent(){
+  if(this.soundTg.getValue()){
+    mouseManager.setSoundOn();
+  }else{
+    mouseManager.setSoundOff();
+  }
+  if(this.bboxBt.isPressed()){
+    bbCreator.setNotCreatedBoundingBox(); 
+  }
+}
+
 
 void captureEvent(Capture c) {
   c.read();

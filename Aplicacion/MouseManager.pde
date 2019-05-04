@@ -1,3 +1,7 @@
+import arb.soundcipher.*;
+
+
+
 class MouseManager{
 
 Robot robot;
@@ -10,9 +14,14 @@ Dimension screenSize;
 static final int waitForClick=2;
 int click[]=new int [2];
 
+boolean soundOn;
+SoundCipher sc;
+
 
  MouseManager() {
    screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+   this.soundOn = false;
+   sc = new SoundCipher();
    try{
      this.robot = new Robot();
    }catch (AWTException e){
@@ -57,8 +66,27 @@ PVector getCamResolution(){
  
 
  void clickMouse(){
+    sound();
     robot.mousePress(InputEvent.BUTTON1_MASK);
     robot.mouseRelease(InputEvent.BUTTON1_MASK); 
+ }
+ 
+ void sound(){
+   if(this.soundOn){
+     sc.instrument(115);
+     sc.playNote(70, 100, 0.5);
+   }
+ }
+ 
+ void setSoundOn(){
+   this.soundOn = true;
+ }
+ void setSoundOff(){
+   this.soundOn = false;
+ }
+ 
+ boolean isSoundOn(){
+   return this.soundOn; 
  }
  
  boolean samePlace(int newX, int newY, int[] click){
