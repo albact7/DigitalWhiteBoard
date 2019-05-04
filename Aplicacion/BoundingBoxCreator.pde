@@ -6,6 +6,7 @@ class BoundingBoxCreator {
   float bbWidth;
   float bbHeight;
   MouseManager mouseManager;
+  PVector resolution;
   
 
   BoundingBoxCreator(MouseManager mouseManager) {
@@ -14,10 +15,13 @@ class BoundingBoxCreator {
     this.bbWidth = Float.MIN_VALUE;
     this.bbHeight = Float.MIN_VALUE;
     this.mouseManager = mouseManager;
+    this.resolution = new PVector(640, 480);
   }
   
  void display() {
     if (!createdBoundingBox) {
+      // que no de primer toque fuera de la bb
+      
       if (bbStartPoint.x != -1) {
         fill(255, 0, 0);
         strokeWeight(2);
@@ -36,11 +40,15 @@ class BoundingBoxCreator {
         } else if (tempHeight < 0) {
            tempHeight = abs(tempHeight);
            tempy = bbStartPoint.y - mouseY;
+           if(tempx > this.resolution.x-tempx) tempx =  this.resolution.x-tempx;
            rect(bbStartPoint.x, mouseY, tempWidth, abs(tempHeight));
         } else if (tempWidth < 0 ) {
-          rect(mouseX, bbStartPoint.y, abs(tempWidth), tempHeight);
+           if(tempy > this.resolution.y-tempy) tempy =  this.resolution.y-tempy;
+           rect(mouseX, bbStartPoint.y, abs(tempWidth), tempHeight);
         } else {
-          rect(tempx, tempy, tempWidth, tempHeight);
+           if(tempx > this.resolution.x-tempx) tempx =  this.resolution.x-tempx;
+           if(tempy > this.resolution.y-tempy) tempy =  this.resolution.y-tempy;
+           rect(tempx, tempy, tempWidth, tempHeight);
         }
       }
      
@@ -63,7 +71,10 @@ class BoundingBoxCreator {
           bbHeight = abs(bbHeight);
           bbStartPoint.y = bbStartPoint.y - bbHeight;
         }
-   
+       
+        if(bbWidth > this.resolution.x-bbWidth) bbWidth =  this.resolution.x-bbWidth;
+        if(bbHeight > this.resolution.y-bbHeight) bbHeight =  this.resolution.y-bbHeight;
+         println("terrible ",bbWidth, bbHeight);
         createdBoundingBox = true;
         setMouseManager();
       }
