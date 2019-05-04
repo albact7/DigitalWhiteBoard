@@ -96,17 +96,17 @@ void draw() {
         image(video, 0, 0);
         board.clickOnRed(video); 
         fill(0, 0, 0);
-        textSize(100);
-        text("You are using Digiboard :)",100, 750); 
+        textSize(100*height*0.001-50);
+        text("You are using Digiboard :)",100, height - 300); 
         buttonShow();
      }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
         image(video, 0, 0);
-        textSize(100);
+        textSize(100*height*0.001-50);
         fill(0, 0, 0);
         if(!colorSeleccionadoCentro){
-          text("select color inside box",100, 750);
+          text("select color inside box",100, height - 300);
         }else{
-          text("select color once more",100, 750); 
+          text("select color once more",100, height - 300); 
         }
         helpColor();
         
@@ -123,20 +123,24 @@ void draw() {
 }
 
 void helpBbox(){
-    textSize(100);
-    text("create bounding box",100, 750);
-    textSize(60);
-    text("1. click inside the board up here to fix the left up corner of the box",130, 830);
-    text("2. move the mouse covering the area you will use as the board",130, 900);
-    text("3. click again to finish the bounding box",130, 970);
+    int step= 70;
+    int start=height - 300;
+    textSize(100*height*0.001-50);
+    text("create bounding box",100, start);
+    textSize(60*height*0.001-20);
+    text("1. click inside the board up here to fix the left up corner of the box",130, start+step);
+    text("2. move the mouse covering the area you will use as the board",130, start+step*2);
+    text("3. click again to finish the bounding box",130, start+step*3);
 }
 
 void helpColor(){
-    textSize(60);
-    text("1. place in front your webcam your pointer with the color you want",130, 830);
-    text("2. click to select the color to recognize as the mouse",130, 900);
-    text("3. you will have to do 2. twice, so try to move your pointer",130, 970);
-    text("to a darker or lighter place",150, 1040);
+    int step= 70;
+    int start=height - 300;
+    textSize(60*height*0.001-20);
+    text("1. place in front your webcam your pointer with the color you want",130, start+step);
+    text("2. click to select the color to recognize as the mouse",130, start+step*2);
+    text("3. you will have to do 2. twice, so try to move your pointer",130, start+step*3);
+    text("to a darker or lighter place",150, start+step*4);
 }
 
 void keyPressed() {
