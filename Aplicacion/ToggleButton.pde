@@ -10,7 +10,7 @@ class ToggleButton{
   
   String textActive; 
   String textNoActive;
-  PImage[] imgT = {loadImage("data/tg_off.png"),loadImage("data/tg_on.png"), loadImage("data/tg_on.png")};
+  PImage[] imgT = {loadImage("data/sound_off.png"),loadImage("data/sound_on.png"), loadImage("data/sound_on.png")};
   
   public ToggleButton(processing.core.PApplet screen, String textActive, String textNoActive, boolean value, float positionX, float positionY, int sizeX, int sizeY){
     this.textActive = textActive;
@@ -20,11 +20,7 @@ class ToggleButton{
     }
     
     cp5 = new ControlP5(screen);
-    label = cp5.addTextlabel(this.textActive)
-                      .setText(textActive)
-                      .setColorValue(0xffffffff)
-                      .setFont(createFont("Calibri",45))
-                      ;
+
     tg = new Toggle(cp5, "");
     tg.setPosition(positionX, positionY);
     /*
@@ -38,8 +34,7 @@ class ToggleButton{
     tg.setMode(ControlP5.SWITCH);  
     tg.setImages(this.imgT);
     tg.setSize(sizeX, sizeY);
-    
-    label.setPosition(positionX,positionY + sizeY+10);
+
   }
   
   void drawToggle() {
@@ -63,21 +58,17 @@ class ToggleButton{
   boolean getValue(){
     if(tg.getBooleanValue()) {
       tg.setColorActive(color(52,219,78));
-      label.setText(this.textActive);
     } else {
       tg.setColorActive(color(219,25,39));
-      label.setText(this.textNoActive);
     }
     return this.tg.getValue() == 1; 
   }
   
   void hide(){
     this.tg.hide();
-    this.label.hide();
   }
   void show(){
     this.tg.show();
-    this.label.show();
   }
   
   

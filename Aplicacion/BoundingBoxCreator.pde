@@ -24,6 +24,7 @@ class BoundingBoxCreator {
       if (bbStartPoint.x != -1) {
         fill(255, 0, 0);
         strokeWeight(2);
+        stroke(0,0,0);
         point(bbStartPoint.x, bbStartPoint.y);
         
         fill(125, 20, 255, 200);

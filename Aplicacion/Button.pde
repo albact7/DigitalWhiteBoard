@@ -7,12 +7,13 @@ class Button{
   boolean toggleValue = false;
   controlP5.Button bt;
   Textlabel label;
-  PImage[] imgT = {loadImage("data/btn_purple_up.png"),loadImage("data/btn_purple_up.png"), loadImage("data/btn_purple_down.png")};
+  
   
   String textActive; 
   String textNoActive;
   
-  public Button(processing.core.PApplet screen, String textActive, boolean value, float positionX, float positionY, int sizeX, int sizeY, float labelX){
+  public Button(processing.core.PApplet screen, String textActive, boolean value, float positionX, float positionY, int sizeX, int sizeY, float labelX, String imageUp, String imageDown){
+    PImage[] imgT = {loadImage(imageUp),loadImage(imageUp), loadImage(imageDown)};
     this.textActive = textActive;
     
     for(PImage img : imgT){
@@ -20,11 +21,7 @@ class Button{
     }
     
     cp5 = new ControlP5(screen);
-    label = cp5.addTextlabel(this.textActive)
-                      .setText(textActive)
-                      .setColorValue(0xffffffff)
-                      .setFont(createFont("Calibri",45))
-                      ;
+   
     bt = new controlP5.Button(cp5, "");
     bt.setPosition(positionX, positionY);
    // bt.setSize(sizeX, sizeY);
@@ -32,11 +29,11 @@ class Button{
     bt.setColorActive(color(52,219,78));
     bt.setColorBackground(color(210,210,210));
     bt.setColorForeground(color(255,0,0));*/
-    bt.setImages(this.imgT);
+    bt.setImages(imgT);
     //bt.updateSize();
     bt.setSize(sizeX, sizeY);
     
-    label.setPosition(labelX,positionY + sizeY+10);
+
   }
   
   void drawToggle() {
@@ -68,11 +65,9 @@ class Button{
   
   void hide(){
     this.bt.hide();
-    this.label.hide();
   }
   void show(){
     this.bt.show();
-    this.label.show();
   }
   
   
