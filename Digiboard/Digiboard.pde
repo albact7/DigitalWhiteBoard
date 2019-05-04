@@ -27,6 +27,7 @@ PFont font;
 PImage backgroundI;
 PImage borderI;
 
+
 void setup() {
 
   font = createFont("Irregularis.ttf", 32);
@@ -43,7 +44,11 @@ void setup() {
   bbCreator = new BoundingBoxCreator(mouseManager);
   scolor= new SeleccionColor(width*0.93, height*0.1,width*0.09);
   
-  video.start();
+  try{
+    video.start();
+  }catch(RuntimeException e){
+    exit();
+  }
   
   this.inicio_captura_x = width / 2 - 320;
   this.inicio_captura_y = height/2 - 240;
@@ -80,6 +85,7 @@ void createPoints(){
 
 void draw() {
   background(255,255,255);
+  
   image(this.backgroundI, 0, 0);
   image(this.borderI, 0, 0);
   buttonEvent();
