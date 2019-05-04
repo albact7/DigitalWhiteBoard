@@ -20,8 +20,7 @@ class BoundingBoxCreator {
   
  void display() {
     if (!createdBoundingBox) {
-      // que no de primer toque fuera de la bb
-      
+ 
       if (bbStartPoint.x != -1) {
         fill(255, 0, 0);
         strokeWeight(2);
@@ -40,14 +39,15 @@ class BoundingBoxCreator {
         } else if (tempHeight < 0) {
            tempHeight = abs(tempHeight);
            tempy = bbStartPoint.y - mouseY;
-           if(tempx > this.resolution.x-tempx) tempx =  this.resolution.x-tempx;
+           if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
            rect(bbStartPoint.x, mouseY, tempWidth, abs(tempHeight));
         } else if (tempWidth < 0 ) {
-           if(tempy > this.resolution.y-tempy) tempy =  this.resolution.y-tempy;
+           if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
            rect(mouseX, bbStartPoint.y, abs(tempWidth), tempHeight);
         } else {
-           if(tempx > this.resolution.x-tempx) tempx =  this.resolution.x-tempx;
-           if(tempy > this.resolution.y-tempy) tempy =  this.resolution.y-tempy;
+           if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
+           if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
+           
            rect(tempx, tempy, tempWidth, tempHeight);
         }
       }
@@ -56,8 +56,8 @@ class BoundingBoxCreator {
   }
 
   void onMouseClick() {
-    if (!createdBoundingBox)
-    { 
+    if (!createdBoundingBox){ 
+      if(isInsideCam(mouseX, mouseY)){
       if (bbStartPoint.x == -1) {
         bbStartPoint = new PVector(mouseX, mouseY);
       } else {
@@ -72,13 +72,18 @@ class BoundingBoxCreator {
           bbStartPoint.y = bbStartPoint.y - bbHeight;
         }
        
-        if(bbWidth > this.resolution.x-bbWidth) bbWidth =  this.resolution.x-bbWidth;
-        if(bbHeight > this.resolution.y-bbHeight) bbHeight =  this.resolution.y-bbHeight;
-         println("terrible ",bbWidth, bbHeight);
+        if(bbWidth > this.resolution.x-bbStartPoint.x) bbWidth =  this.resolution.x-bbStartPoint.x;
+        if(bbHeight > this.resolution.y-bbStartPoint.y) bbHeight =  this.resolution.y-bbStartPoint.y;
+
         createdBoundingBox = true;
         setMouseManager();
       }
     }
+    }
+  }
+  
+  boolean isInsideCam(int x, int y){
+    return ((0 <= x) && (x <= this.resolution.x) && (0 <= y) && (y <= this.resolution.y) );
   }
   
   boolean isDone() {
