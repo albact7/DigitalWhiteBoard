@@ -1,11 +1,11 @@
-class SeleccionColor{
+class ColorSelection{
   
   float x, y, radio;
   private color colorActualCentro;
   private color colorActualEsquina;
-  boolean seleccionando=false;
+  boolean selecting=false;
   
-  SeleccionColor(float x, float y, float radio){
+  ColorSelection(float x, float y, float radio){
     this.x=x;
     this.y=y;
     this.radio=radio;
@@ -23,7 +23,7 @@ class SeleccionColor{
     float disX = this.x - mouseX;
     float disY = this.y - mouseY;
     if (sqrt(sq(disX) + sq(disY)) < radio) {
-     this.seleccionando = !this.seleccionando; 
+     this.selecting = !this.selecting; 
     }
   }
   

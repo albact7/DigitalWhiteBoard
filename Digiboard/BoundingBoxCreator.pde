@@ -1,7 +1,6 @@
 class BoundingBoxCreator {
   
   boolean createdBoundingBox = false;
-
   PVector bbStartPoint;
   float bbWidth;
   float bbHeight;
@@ -32,29 +31,36 @@ class BoundingBoxCreator {
         float tempHeight = mouseY - bbStartPoint.y;
         float tempx = bbStartPoint.x;
         float tempy = bbStartPoint.y;
-        if (tempWidth < 0 && tempHeight < 0) {
-           tempWidth = abs(tempWidth);
-           tempx = bbStartPoint.x - mouseX;
-           tempy = bbStartPoint.y - mouseY;
-           rect(mouseX, mouseY, tempx, tempy);
-        } else if (tempHeight < 0) {
-           tempHeight = abs(tempHeight);
-           tempy = bbStartPoint.y - mouseY;
-           if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
-           rect(bbStartPoint.x, mouseY, tempWidth, abs(tempHeight));
-        } else if (tempWidth < 0 ) {
-           if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
-           rect(mouseX, bbStartPoint.y, abs(tempWidth), tempHeight);
-        } else {
-           if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
-           if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
-           
-           rect(tempx, tempy, tempWidth, tempHeight);
-        }
-      }
-     
+        
+        extendBB(tempWidth, tempHeight, tempx, tempy);
+      } 
     }
   }
+  
+  private void extendBB(float tempWidth, float tempHeight, float tempx, float tempy){
+
+    if (tempWidth < 0 && tempHeight < 0) {
+          tempWidth = abs(tempWidth);
+          tempx = bbStartPoint.x - mouseX;
+          tempy = bbStartPoint.y - mouseY;
+          rect(mouseX, mouseY, tempx, tempy);
+      } else if (tempHeight < 0) {
+          tempHeight = abs(tempHeight);
+          tempy = bbStartPoint.y - mouseY;
+          if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
+          rect(bbStartPoint.x, mouseY, tempWidth, abs(tempHeight));
+      } else if (tempWidth < 0 ) {
+          if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
+          rect(mouseX, bbStartPoint.y, abs(tempWidth), tempHeight);
+      } else {
+          if(tempWidth > this.resolution.x-tempx) tempWidth =  this.resolution.x-tempx;
+          if(tempHeight > this.resolution.y-tempy) tempHeight =  this.resolution.y-tempy;
+          
+          rect(tempx, tempy, tempWidth, tempHeight);
+    }
+
+  }
+  
 
   void onMouseClick() {
     if (!createdBoundingBox){ 
@@ -102,8 +108,6 @@ class BoundingBoxCreator {
     mouseManager.setDefaultResolutionX(int(bbWidth));
     mouseManager.setDefaultResolutionY(int(bbHeight));
     mouseManager.setDefaultStartPoint(bbStartPoint);
-    println("Start Point "+bbStartPoint.x);
-    println(bbStartPoint.y);
   }
   
     

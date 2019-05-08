@@ -5,20 +5,20 @@ import arb.soundcipher.*;
 class MouseManager{
 
 Robot robot;
-public int defaultResolutionX = 640;
-public int defaultResolutionY = 480;
-public PVector startPoint;
+int defaultResolutionX = 640;
+int defaultResolutionY = 480;
+PVector startPoint;
 
 Dimension screenSize;
-
 static final int waitForClick=2;
 int click[]=new int [2];
-
 boolean soundOn;
 SoundCipher sc;
 
 
- MouseManager() {
+ MouseManager(int camWidth, int camHeight) {
+   this.defaultResolutionX = camWidth;
+   this.defaultResolutionY = camHeight;
    screenSize = Toolkit.getDefaultToolkit().getScreenSize();
    this.soundOn = false;
    sc = new SoundCipher();
@@ -28,15 +28,12 @@ SoundCipher sc;
     e.printStackTrace();
    }
  }
- 
   
  void setDefaultResolutionX(int x){
-   println(x);
     this.defaultResolutionX=x;
  }
   
  void setDefaultResolutionY(int y){
-   println(y);
     this.defaultResolutionY=y;
  }
  
@@ -48,9 +45,9 @@ SoundCipher sc;
     return this.defaultResolutionY;
  }
  
-PVector getCamResolution(){
-   return new PVector(defaultResolutionX, defaultResolutionY);
-}
+ PVector getCamResolution(){
+    return new PVector(defaultResolutionX, defaultResolutionY);
+ }
  
  void setDefaultStartPoint(PVector startPoint){
      this.startPoint = startPoint;
@@ -61,15 +58,14 @@ PVector getCamResolution(){
  }
  
  void moveMouse(PVector point){
- 
- try{
-   if(point != null){
-     robot.mouseMove(convertCoordinateX((int)point.x), convertCoordinateY((int)point.y));
-     Thread.sleep(100);
-   }
-  }catch(InterruptedException e){
-  e.printStackTrace();
-  }
+   try{
+     if(point != null){
+       robot.mouseMove(convertCoordinateX((int)point.x), convertCoordinateY((int)point.y));
+       Thread.sleep(100);
+     }
+    }catch(InterruptedException e){
+    e.printStackTrace();
+    }
  }
  
 
@@ -119,8 +115,7 @@ PVector getCamResolution(){
    if(x>=0){
      float drF = (float) defaultResolutionX;
      float scF = (float) screenWidth;
-     
-    newX = (int)(((float)x + (float)x*(abs(drF - scF)/drF))) ;
+     newX = (int)(((float)x + (float)x*(abs(drF - scF)/drF))) ;
    }
    return newX;
  }
@@ -132,21 +127,9 @@ PVector getCamResolution(){
    if(y>=0){
      float drF = (float) defaultResolutionY;
      float scF = (float) screenHeight;
-   newY = (int) (((float)y + (float) y*(abs(drF - scF)/drF)));
+     newY = (int) (((float)y + (float) y*(abs(drF - scF)/drF)));
    }
    return newY;
  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
 }

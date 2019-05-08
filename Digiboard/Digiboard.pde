@@ -2,11 +2,11 @@ import arb.soundcipher.*;
 import gab.opencv.*;
 import processing.video.*;
 
+boolean TEST_MODE=true;
 
 Capture video;
 OpenCV opencv;
 
-SeleccionColor scolor;
 BoundingBoxCreator bbCreator;
 
 float inicio_captura_x;
@@ -28,21 +28,24 @@ PImage backgroundI;
 PImage borderI;
 
 
+Dimension screenSize;
+int screenWidth;
+int screenHeight;
+static final int CAM_WIDTH = 640;
+static final int CAM_HEIGHT = 480;
+
 void setup() {
 
   font = createFont("Irregularis.ttf", 32);
   textFont(font);
   
   fullScreen();
-  video = new Capture(this, 640 , 480 );
+  video = new Capture(this, CAM_WIDTH , CAM_HEIGHT );
   
-  opencv = new OpenCV(this, 640, 480);
- 
+  opencv = new OpenCV(this, CAM_WIDTH, CAM_HEIGHT);
 
-  println(opencv.width, opencv.height);
-  mouseManager = new MouseManager();
+  mouseManager = new MouseManager(CAM_WIDTH, CAM_HEIGHT);
   bbCreator = new BoundingBoxCreator(mouseManager);
-  scolor= new SeleccionColor(width*0.93, height*0.1,width*0.09);
   
   try{
     video.start();
@@ -59,67 +62,69 @@ void setup() {
   colorSeleccionadoCentro=false;
   colorSeleccionadoEsquina=false;
 
-  this.soundTg = new ToggleButton(this, "Sound", "Sound OFF", true, width*0.8,height*0.5, 200,100);
-  this.bboxBt = new Button(this, "bbox", true, width*0.8,height*0.2, 200,200, width*0.75, "data/bbox_up.png", "data/bbox_down.png");
-  this.colorBt = new Button(this, "color", true, width*0.8,height*0.7, 200,200, width*0.75, "data/color_up.png", "data/color_down.png");
+  if(!TEST_MODE){
+  this.soundTg = new ToggleButton(this, true, width*0.8,height*0.5, 200,100);
+  this.bboxBt = new Button(this, "bbox", width*0.8,height*0.2, 200,200, "data/bbox_up.png", "data/bbox_down.png");
+  this.colorBt = new Button(this, "color", width*0.8,height*0.7, 200,200, "data/color_up.png", "data/color_down.png");
   
   this.borderI = loadImage("data/border.png");
   this.borderI.resize(788,0);
   this.backgroundI = loadImage("data/wall.png");
   this.backgroundI.resize(width,0);
+  }
 }
 
-Dimension screenSize;
-int screenWidth;
-int screenHeight;
-void createPoints(){
-     
- this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
- this.screenWidth = (int) screenSize.getWidth();
- this.screenHeight = (int) screenSize.getHeight();
-
-    
+void createPoints(){ 
+   this.screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+   this.screenWidth = (int) screenSize.getWidth();
+   this.screenHeight = (int) screenSize.getHeight();  
 }
-
 
 
 void draw() {
-  background(255,255,255);
-  
-  image(this.backgroundI, 0, 0);
-  image(this.borderI, 0, 0);
-  buttonEvent();
-  buttonHide();
-  if (bbCreator.isDone()) { // If bounding box is defined
-     opencv.loadImage(video);
-     if(colorSeleccionadoCentro && colorSeleccionadoEsquina){ // If center and corner color are selected, ready to run
-        image(video, 0, 0);
-        board.clickOnRed(video); 
+  if(TEST_MODE){
+      fill(0, 0, 0);
+      textSize(100);
+      text("Running tests, check console",width/4, height/2);
+      delay(1000);
+      Test test = new Test();
+      test.run();
+    
+  }else{
+      background(255,255,255);
+      
+      image(this.backgroundI, 0, 0);
+      image(this.borderI, 0, 0);
+      buttonEvent();
+      buttonHide();
+      if (bbCreator.isDone()) { // If bounding box is defined
+         opencv.loadImage(video);
+         if(colorSeleccionadoCentro && colorSeleccionadoEsquina){ // If center and corner color are selected, ready to run
+            image(video, 0, 0);
+            board.clickOnRed(video); 
+            fill(0, 0, 0);
+            textSize(100*height*0.001-50);
+            text("You are using Digiboard :)",100, height - 300); 
+            buttonShow();
+         }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
+            image(video, 0, 0);
+            textSize(100*height*0.001-50);
+            fill(0, 0, 0);
+            if(!colorSeleccionadoCentro){
+              text("select color inside box",100, height - 300);
+            }else{
+              text("select color once more",100, height - 300); 
+            }
+            helpColor();
+            
+         }
+      }else { // If bounding box is not defined, create it
         fill(0, 0, 0);
-        textSize(100*height*0.001-50);
-        text("You are using Digiboard :)",100, height - 300); 
-        buttonShow();
-     }else if (!(colorSeleccionadoCentro && colorSeleccionadoEsquina)){
-        image(video, 0, 0);
-        textSize(100*height*0.001-50);
-        fill(0, 0, 0);
-        if(!colorSeleccionadoCentro){
-          text("select color inside box",100, height - 300);
-        }else{
-          text("select color once more",100, height - 300); 
-        }
-        helpColor();
-        
-     }
-  }else { // If bounding box is not defined, create it
-     // background(255,255,255);
-    fill(0, 0, 0);
-    helpBbox();
-    image(video, 0, 0); 
-    bbCreator.display();
-  
+        helpBbox();
+        image(video, 0, 0); 
+        bbCreator.display();
+      }
   }
-
 }
 
 void helpBbox(){
@@ -160,19 +165,15 @@ void keyPressed() {
 void mouseClicked(){
   if(bbCreator.isDone()){ // Afted bounding box is created, select colors
       if(isInsideCam(mouseX, mouseY)){
-      if(!colorSeleccionadoCentro){ // First, center color selected
-       color pixel = video.pixels[mouseY*640+mouseX];
-       scolor.cambiarColorActualCentro(pixel);
-       board.setColorDeteccionCentro(pixel);
-       colorSeleccionadoCentro=true;
-      
-      }else if(!colorSeleccionadoEsquina){ // Then, corner color selected
-       color pixel = video.pixels[mouseY*640+mouseX];
-       scolor.cambiarColorActualEsquina(pixel);
-       board.setColorDeteccionEsquina(pixel);
-       colorSeleccionadoEsquina=true;
-       
-      }
+        if(!colorSeleccionadoCentro){ // First, center color selected
+         color pixel = video.pixels[mouseY*640+mouseX];
+         board.setColorDetectionCenter(pixel);
+         colorSeleccionadoCentro=true;
+        }else if(!colorSeleccionadoEsquina){ // Then, corner color selected
+         color pixel = video.pixels[mouseY*640+mouseX];
+         board.setColorDetectionCorner(pixel);
+         colorSeleccionadoEsquina=true;
+        }
       }
   }else{
     bbCreator.onMouseClick(); // Create bounding box
@@ -213,7 +214,6 @@ void buttonEvent(){
     colorSeleccionadoEsquina = false;
   }
 }
-
 
 void captureEvent(Capture c) {
   c.read();

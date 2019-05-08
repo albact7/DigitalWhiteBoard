@@ -11,8 +11,8 @@ PVector startPoint;
 float oldMouseX,oldMouseY;
 
 color fondo=color(255,255,128);
-color colorDeteccionCentro;
-color colorDeteccionEsquina;
+color colorDetectionCenter;
+color colorDetectionCorner;
 color paleta[] = {
       color(0),
       color(255),
@@ -81,12 +81,12 @@ void paint(int newMouseX, int newMouseY){
 }
   
   
- public PVector clickOnRed(Capture video) {
+ PVector clickOnRed(Capture video) {
     mouseManager.moveMouse(whereIsRed(video));
     return null;
  }
  
- public PVector whereIsRed(Capture video) {
+ PVector whereIsRed(Capture video) {
     selectedPoints = new int[640*2][3];
     selectedColors = new int[640*2];
     int nearest[] = new int [2];
@@ -131,11 +131,7 @@ void paint(int newMouseX, int newMouseY){
      return null;
  }
  
- PVector getLastRed(){
-    return this.lastRed; 
- }
- 
- void doTheClick(){
+ private void doTheClick(){
    if(waitUntilNextClick==waitAfterClick){
      mouseManager.clickMouse();
      waitUntilNextClick=0;
@@ -143,82 +139,35 @@ void paint(int newMouseX, int newMouseY){
    waitUntilNextClick++;
  }
  
- int getCoordinateClose(int coord1, int coord2){
+ private int getCoordinateClose(int coord1, int coord2){
      return coord1 + (coord1-coord2)/2;
  }
  
- boolean isInCorner(int x, int y){
-    return  (x <= resolutionX/6) && (x >= resolutionX*5/6) && (y <= resolutionY/6) && (y >= resolutionY*5/6);
- }
- 
- boolean centerRed(Capture video, int nPix){
-    for (int i = 1; i<10;i++){
-      if(!(areSimilar(video, nPix-i)&&areSimilar(video, nPix+i)&&areSimilar(video, (nPix-i)-resX*i)&&areSimilar(video, nPix+i+resX*i)))
-          return false;
-    }
-    return true;
- }
- 
- int[] nearestPoint(){
-   int nearest[] = new int [2];
-   float smallestDif=1000;
-   for(int i =0; i<selectedPoints.length; i++){
-      if(calculateDifference(selectedColors[i])<smallestDif){  
-        smallestDif = calculateDifference(selectedColors[i]);
-        nearest[0]=selectedPoints[i][0];
-        nearest[1]=selectedPoints[i][1];
-      }
-   }
-   return nearest;
- }
- 
- float calculateDifference(color pixelValue){
-    float difRed =max(abs(red(this.colorDeteccionCentro)-red(pixelValue)),abs(red(this.colorDeteccionEsquina)-red(pixelValue)));
-    float difGreen =max(abs(green(this.colorDeteccionCentro)-green(pixelValue)),abs(green(this.colorDeteccionEsquina)-green(pixelValue)));
-    float difBlue =max(abs(blue(this.colorDeteccionCentro)-blue(pixelValue)),abs(blue(this.colorDeteccionEsquina)-blue(pixelValue)));
+ private float calculateDifference(color pixelValue){
+    float difRed =max(abs(red(this.colorDetectionCenter)-red(pixelValue)),abs(red(this.colorDetectionCorner)-red(pixelValue)));
+    float difGreen =max(abs(green(this.colorDetectionCenter)-green(pixelValue)),abs(green(this.colorDetectionCorner)-green(pixelValue)));
+    float difBlue =max(abs(blue(this.colorDetectionCenter)-blue(pixelValue)),abs(blue(this.colorDetectionCorner)-blue(pixelValue)));
     return difRed+difGreen+difBlue;
  }
  
- void setColorDeteccionCentro(color nuevoColor) {
-   this.colorDeteccionCentro = nuevoColor;
-      println("r: " + red(nuevoColor) + " - g: " + green(nuevoColor) + " - b: " + blue(nuevoColor));
+ void setColorDetectionCenter(color newColor) {
+   this.colorDetectionCenter = newColor;
+      println("r: " + red(newColor) + " - g: " + green(newColor) + " - b: " + blue(newColor));
  }
- void setColorDeteccionEsquina(color nuevoColor) {
-   this.colorDeteccionEsquina = nuevoColor;
-      println("r: " + red(nuevoColor) + " - g: " + green(nuevoColor) + " - b: " + blue(nuevoColor));
+ void setColorDetectionCorner(color newColor) {
+   this.colorDetectionCorner = newColor;
+      println("r: " + red(newColor) + " - g: " + green(newColor) + " - b: " + blue(newColor));
  }
  
- boolean sonProximos(float color1, float color2){
+ private boolean areNearColors(float color1, float color2){
    return (color1<color2 + 4 && color1 > color2 - 4);
  }
  
- boolean areAllNear(int pixelValue){
-   return sonProximos(red(pixelValue), red(this.colorDeteccionCentro)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionCentro)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionCentro))
-             || ( sonProximos(red(pixelValue), red(this.colorDeteccionEsquina)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionEsquina)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionEsquina)));
+ private boolean areAllNear(int pixelValue){
+   return areNearColors(red(pixelValue), red(this.colorDetectionCenter)) && areNearColors(blue(pixelValue), blue(this.colorDetectionCenter)) && 
+             areNearColors(green(pixelValue), green(this.colorDetectionCenter))
+             || ( areNearColors(red(pixelValue), red(this.colorDetectionCorner)) && areNearColors(blue(pixelValue), blue(this.colorDetectionCorner)) && 
+             areNearColors(green(pixelValue), green(this.colorDetectionCorner)));
  }
- 
- boolean areSimilar(Capture video, int nPix){
-   color pixelValue=0;
-   if(nPix<resX*resY && nPix>=0){
-   pixelValue = video.pixels[nPix];
-   }
-   if(pixelValue==0){
-     return true;
-   }
-  return sonProximos(red(pixelValue), red(this.colorDeteccionCentro)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionCentro)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionCentro)) 
-             || sonProximos(red(pixelValue), red(this.colorDeteccionEsquina)) && sonProximos(blue(pixelValue), blue(this.colorDeteccionEsquina)) && 
-             sonProximos(green(pixelValue), green(this.colorDeteccionEsquina)) ;
- }
- 
-
- 
-  
-
-  
-  
-  
   
 }
