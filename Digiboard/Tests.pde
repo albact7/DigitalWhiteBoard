@@ -8,9 +8,13 @@ class Test {
     this.board = new Board(this.mouseManager);
   }
   void run() {
+
     pointRedInsideBoundingBox();
     calculateDifferenceBetweenColors();
     areNearColors();
+    areAllNearColors();
+    areSamePlace();
+    convertCoordinate();
     exit();
   }
 
@@ -20,7 +24,7 @@ class Test {
     mouseManager.setDefaultStartPoint(bbStartPoint);
   }
 
-  void pointRedInsideBoundingBox() {
+  private void pointRedInsideBoundingBox() {
     int bbX=200;
     int bbY=100;
     PVector startPoint = new PVector(5, 5);
@@ -57,7 +61,7 @@ class Test {
     }
   }
 
-  void calculateDifferenceBetweenColors() {
+  private void calculateDifferenceBetweenColors() {
     color referenceA = color(100, 150, 100);
     color referenceB = color(150, 100, 150);
 
@@ -82,27 +86,112 @@ class Test {
       exit();
     }
   }
-  
-  void areNearColors() {
+
+  private void areNearColors() {
+    println("Are colors near between them? (Just one component of RGB)");
+    try {
+      assert !board.areNearColors(40, 44): 
+      "Expected FALSE and result is "+ board.areNearColors(40, 44);
+      println("  ColorA:40, colorB:44. Expected FALSE and result is ", board.areNearColors(40, 44));
+
+      assert !board.areNearColors(44, 40): 
+      "Expected FALSE and result is "+ board.areNearColors(44, 40);
+      println("  ColorA:44, colorB:40. Expected FALSE and result is ", board.areNearColors(44, 40));
+
+      assert board.areNearColors(41, 44): 
+      "Expected TRUE and result is "+ board.areNearColors(41, 44);
+      println("  ColorA:41, colorB:44. Expected TRUE and result is ", board.areNearColors(41, 44));
+
+
+      println();
+    }
+    catch(AssertionError e) {
+      System.err.println(e);
+      exit();
+    }
+  }
+
+  private void areAllNearColors() {
     color referenceA = color(100, 150, 100);
     color referenceB = color(150, 100, 150);
 
-    println("Are colors near between them? (Just one component of RGB)");
+    this.board.setColorDetectionCenter(referenceA);
+    this.board.setColorDetectionCorner(referenceB);
+
+    println("Are colors near between them? (Three components of RGB)");
     println("ColorA: "+referenceA+". ColorB: "+referenceB);
     try {
-      assert !board.areNearColors(40,44): 
-      "Expected FALSE and result is "+ board.areNearColors(40,44);
-      println("  ColorA:40, colorB:44. Expected FALSE and result is ", board.areNearColors(40,44));
-      
-      assert !board.areNearColors(44,40): 
-      "Expected FALSE and result is "+ board.areNearColors(44,40);
-      println("  ColorA:44, colorB:40. Expected FALSE and result is ", board.areNearColors(44,40));
-      
-      assert board.areNearColors(41,44): 
-      "Expected TRUE and result is "+ board.areNearColors(41,44);
-      println("  ColorA:41, colorB:44. Expected TRUE and result is ", board.areNearColors(41,44));
+      assert board.areAllNear(color(103, 153, 103)): 
+      "Expected TRUE and result is "+ board.areAllNear(color(103, 153, 103));
+      println("  Expected TRUE and result is ", board.areAllNear(color(103, 153, 103)));
 
-      
+      assert !board.areAllNear(color(105, 153, 103)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(105, 153, 103));
+      println("  Expected FALSE and result is ", board.areAllNear(color(105, 153, 103)));
+
+      assert !board.areAllNear(color(103, 155, 103)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(103, 155, 103));
+      println("  Expected FALSE and result is ", board.areAllNear(color(103, 155, 103)));
+
+      assert !board.areAllNear(color(103, 153, 105)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(103, 153, 105));
+      println("  Expected FALSE and result is ", board.areAllNear(color(103, 153, 105)));
+
+      assert !board.areAllNear(color(155, 103, 153)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(155, 103, 153));
+      println("  Expected FALSE and result is ", board.areAllNear(color(155, 103, 153)));
+
+      assert !board.areAllNear(color(153, 105, 153)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(153, 105, 153));
+      println("  Expected FALSE and result is ", board.areAllNear(color(153, 105, 153)));
+
+      assert !board.areAllNear(color(153, 103, 155)): 
+      "Expected FALSE and result is "+ board.areAllNear(color(153, 103, 155));
+      println("  Expected FALSE and result is ", board.areAllNear(color(153, 103, 155)));
+
+      println();
+    }
+    catch(AssertionError e) {
+      System.err.println(e);
+      exit();
+    }
+  }
+
+  private void areSamePlace() {
+    int[] click = {50, 50};
+    println("Are clicks near between them?");
+    try {
+      assert mouseManager.samePlace(69, 69, click): 
+      "Expected TRUE and result is "+ mouseManager.samePlace(69, 69, click);
+      println("  Expected TRUE and result is ", mouseManager.samePlace(69, 69, click));
+
+      assert !mouseManager.samePlace(70, 69, click): 
+      "Expected FALSE and result is "+ mouseManager.samePlace(70, 69, click);
+      println("  Expected FALSE and result is ", mouseManager.samePlace(70, 69, click));
+
+      assert !mouseManager.samePlace(69, 70, click): 
+      "Expected FALSE and result is "+ mouseManager.samePlace(69, 70, click);
+      println("  Expected FALSE and result is ", mouseManager.samePlace(69, 70, click));
+
+      println();
+    }
+    catch(AssertionError e) {
+      System.err.println(e);
+      exit();
+    }
+  }
+
+  private void convertCoordinate() {
+    println("Convert coordinate from camera resolution to computer's resolution");
+    try {
+      assert mouseManager.convertCoordinate(10, 1000, 0, 100) ==100: 
+      "Expected 100 and result is "+ mouseManager.convertCoordinate(10, 1000, 0, 100);
+      println("  Expected 100 and result is "+ mouseManager.convertCoordinate(10, 1000, 0, 100));
+
+      assert mouseManager.convertCoordinate(0, 1000, 0, 100) ==0: 
+      "Expected 0 and result is "+ mouseManager.convertCoordinate(0, 1000, 0, 100);
+      println("  Expected 0 and result is "+ mouseManager.convertCoordinate(0, 1000, 0, 100));
+
       println();
     }
     catch(AssertionError e) {

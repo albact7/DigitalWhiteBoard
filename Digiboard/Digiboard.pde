@@ -2,7 +2,7 @@ import arb.soundcipher.*;
 import gab.opencv.*;
 import processing.video.*;
 
-boolean TEST_MODE=false;
+boolean TEST_MODE=true;
 
 Capture video;
 OpenCV opencv;

@@ -160,7 +160,7 @@ class Board {
     return (color1<color2 + 4 && color1 > color2 - 4);
   }
 
-  private boolean areAllNear(int pixelValue) {
+  boolean areAllNear(int pixelValue) {
     return areNearColors(red(pixelValue), red(this.colorDetectionCenter)) && areNearColors(blue(pixelValue), blue(this.colorDetectionCenter)) && 
       areNearColors(green(pixelValue), green(this.colorDetectionCenter))
       || ( areNearColors(red(pixelValue), red(this.colorDetectionCorner)) && areNearColors(blue(pixelValue), blue(this.colorDetectionCorner)) && 
