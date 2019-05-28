@@ -61,7 +61,7 @@ class BoundingBoxCreator {
   }
 
 
-  void onMouseClick() {
+  boolean onMouseClick() {
     if (!createdBoundingBox) { 
       if (isInsideCam(mouseX, mouseY)) {
         if (bbStartPoint.x == -1) {
@@ -84,8 +84,12 @@ class BoundingBoxCreator {
           createdBoundingBox = true;
           setMouseManager();
         }
+        return true;
+      }else{
+        return false;
       }
     }
+    return true;
   }
 
   boolean isInsideCam(int x, int y) {

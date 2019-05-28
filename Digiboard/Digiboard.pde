@@ -2,7 +2,7 @@ import arb.soundcipher.*;
 import gab.opencv.*;
 import processing.video.*;
 
-boolean TEST_MODE=true;
+boolean TEST_MODE=false;
 
 Capture video;
 OpenCV opencv;
@@ -34,6 +34,8 @@ int screenHeight;
 static final int CAM_WIDTH = 640;
 static final int CAM_HEIGHT = 480;
 
+boolean validBB;
+
 void setup() {
 
   font = createFont("Irregularis.ttf", 32);
@@ -63,6 +65,8 @@ void setup() {
 
     colorSeleccionadoCentro=false;
     colorSeleccionadoEsquina=false;
+    
+    this.validBB = true;
 
 
     this.soundTg = new ToggleButton(this, true, width*0.8, height*0.5, 200, 100);
@@ -120,9 +124,9 @@ void draw() {
       }
     } else { // If bounding box is not defined, create it
       fill(0, 0, 0);
-      helpBbox();
-      image(video, 0, 0); 
+      image(video, 0, 0);
       bbCreator.display();
+      helpBbox();
     }
   }
 }
@@ -130,12 +134,18 @@ void draw() {
 void helpBbox() {
   int step= 70;
   int start=height - 300;
+  fill(0, 0, 0);
   textSize(100*height*0.001-50);
   text("create bounding box", 100, start);
   textSize(60*height*0.001-20);
   text("1. click inside the board up here to fix the left up corner of the box", 130, start+step);
   text("2. move the mouse covering the area you will use as the board", 130, start+step*2);
-  text("3. click again to finish the bounding box", 130, start+step*3);
+  text("3. click again to finish the bounding box", 130, start+step*3); 
+  if(!this.validBB){
+    fill(255, 0, 0);
+    textSize(100*height*0.001-50);
+    text("Stay inside!", 200, 200);
+  }
 }
 
 void helpColor() {
@@ -176,7 +186,7 @@ void mouseClicked() {
       }
     }
   } else {
-    bbCreator.onMouseClick(); // Create bounding box
+    this.validBB = bbCreator.onMouseClick(); // Create bounding box
     board.setConstants();
   }
 }
