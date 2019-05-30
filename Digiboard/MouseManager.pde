@@ -4,16 +4,14 @@ import arb.soundcipher.*;
 
 class MouseManager {
 
-  Robot robot;
-  int defaultResolutionX = 640;
-  int defaultResolutionY = 480;
-  PVector startPoint;
+  private Robot robot;
+  private int defaultResolutionX;
+  private int defaultResolutionY;
+  private PVector startPoint;
 
-  Dimension screenSize;
-  static final int waitForClick=2;
-  int click[]=new int [2];
-  boolean soundOn;
-  SoundCipher sc;
+  private Dimension screenSize;
+  private boolean soundOn;
+  private SoundCipher sc;
 
 
   MouseManager(int camWidth, int camHeight) {
@@ -46,9 +44,6 @@ class MouseManager {
     return this.defaultResolutionY;
   }
 
-  PVector getCamResolution() {
-    return new PVector(defaultResolutionX, defaultResolutionY);
-  }
 
   void setDefaultStartPoint(PVector startPoint) {
     this.startPoint = startPoint;

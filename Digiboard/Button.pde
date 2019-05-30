@@ -1,13 +1,11 @@
 import controlP5.*;
 
 
-class Button implements InterfaceComponent{
+class Button implements InterfaceComponent {
 
   ControlP5 cp5;
-  boolean toggleValue = false;
   controlP5.Button bt;
   String textActive; 
-  String textNoActive;
 
   public Button(processing.core.PApplet screen, String textActive, float positionX, float positionY, int sizeX, int sizeY, String imageUp, String imageDown) {
     PImage[] imgT = {loadImage(imageUp), loadImage(imageUp), loadImage(imageDown)};

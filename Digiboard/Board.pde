@@ -3,42 +3,22 @@ import java.awt.event.InputEvent;
 import java.util.Random;
 class Board {
 
-  int resolutionX = 640;
-  int resolutionY = 480;
-  PVector startPoint;
+  private int resolutionX;
+  private int resolutionY;
+  private PVector startPoint;
+
+  private color colorDetectionCenter;
+  private color colorDetectionCorner;
 
 
-  float oldMouseX, oldMouseY;
+  private MouseManager mouseManager;
+  private static final int WAIT_FOR_CLICK=2;
+  private int click[]=new int [2];
+  private int numberOfClick=0;
+  private static final int WAIT_AFTER_CLICK=5 ;
+  private int waitUntilNextClick=WAIT_AFTER_CLICK;
 
-  color fondo=color(255, 255, 128);
-  color colorDetectionCenter;
-  color colorDetectionCorner;
-  color paleta[] = {
-    color(0), 
-    color(255), 
-    color(255, 0, 0), 
-    color(0, 255, 0), 
-    color(0, 0, 255)
-  };
-
-  int colorActual=3;    
-  int strokeW=10;
-
-  int ell1=1;
-  int selectedPoints[][];
-  color selectedColors[];
-  int point=0;
-  int resX = 640;
-  int resY = 480;
-
-  MouseManager mouseManager;
-  static final int waitForClick=2;
-  int click[]=new int [2];
-  int numberOfClick=0;
-  static final int waitAfterClick=5 ;
-  int waitUntilNextClick=waitAfterClick;
-
-  PVector lastRed;
+  private PVector lastRed;
 
   Board(MouseManager mouseManager) {
     this.mouseManager = mouseManager; 
@@ -63,31 +43,19 @@ class Board {
       );
   }
 
-  void setupBoard() {  
-    this.oldMouseX=0;
-    this.oldMouseY=0;
-  }
-
   void paint(int newMouseX, int newMouseY) {
     noStroke();
-    strokeWeight(strokeW);
-    stroke(paleta[colorActual]);
-
+    strokeWeight(10);
+    stroke(color(0, 255, 0));
     point(newMouseX, newMouseY);
-
-    oldMouseX=newMouseX;
-    oldMouseY=newMouseY;
   }
 
 
-  PVector clickOnRed(Capture video) {
+  void moveOnRed(Capture video) {
     mouseManager.moveMouse(whereIsRed(video));
-    return null;
   }
 
   PVector whereIsRed(Capture video) {
-    selectedPoints = new int[640*2][3];
-    selectedColors = new int[640*2];
     int nearest[] = new int [2];
     float smallestDif=1000;
     boolean painted = false;
@@ -103,7 +71,6 @@ class Board {
             nearest[0]=x;
             nearest[1]=y;
           }
-          point++;
         }
       }
     }
@@ -120,7 +87,7 @@ class Board {
           paint(nearest[0], nearest[1]);
           lastRed = new PVector(nearest[0], nearest[1]);
         }
-        if (numberOfClick==waitForClick) {
+        if (numberOfClick==WAIT_FOR_CLICK) {
           doTheClick();
           numberOfClick =0;
         }
@@ -131,7 +98,7 @@ class Board {
   }
 
   private void doTheClick() {
-    if (waitUntilNextClick==waitAfterClick) {
+    if (waitUntilNextClick==WAIT_AFTER_CLICK) {
       mouseManager.clickMouse();
       waitUntilNextClick=0;
     }

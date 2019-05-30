@@ -1,11 +1,11 @@
 class BoundingBoxCreator {
 
-  boolean createdBoundingBox = false;
-  PVector bbStartPoint;
-  float bbWidth;
-  float bbHeight;
-  MouseManager mouseManager;
-  PVector resolution;
+  private boolean createdBoundingBox = false;
+  private PVector bbStartPoint;
+  private float bbWidth;
+  private float bbHeight;
+  private MouseManager mouseManager;
+  private PVector resolution;
 
 
   BoundingBoxCreator(MouseManager mouseManager) {
@@ -14,7 +14,7 @@ class BoundingBoxCreator {
     this.bbWidth = Float.MIN_VALUE;
     this.bbHeight = Float.MIN_VALUE;
     this.mouseManager = mouseManager;
-    this.resolution = new PVector(640, 480);
+    this.resolution = new PVector(this.mouseManager.getDefaultResolutionX(), this.mouseManager.getDefaultResolutionY());
   }
 
   void display() {
@@ -85,7 +85,7 @@ class BoundingBoxCreator {
           setMouseManager();
         }
         return true;
-      }else{
+      } else {
         return false;
       }
     }

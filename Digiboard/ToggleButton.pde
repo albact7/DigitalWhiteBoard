@@ -4,7 +4,6 @@ import controlP5.*;
 class ToggleButton implements InterfaceComponent{
 
   ControlP5 cp5;
-  boolean toggleValue = false;
   Toggle tg;  
   PImage[] imgT = {loadImage("data/sound_off.png"), loadImage("data/sound_on.png"), loadImage("data/sound_on.png")};
 
