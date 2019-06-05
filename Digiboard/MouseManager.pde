@@ -55,11 +55,10 @@ class MouseManager {
 
   void moveMouse(PVector point) {
     try {
-      if (point != null) {
-        robot.mouseMove(convertCoordinate((int)point.x, (float) screenSize.getWidth(), (int) startPoint.x, (float) defaultResolutionX), 
-                  convertCoordinate((int)point.y, (float) screenSize.getHeight(), (int) startPoint.y, (float) defaultResolutionY));
-        Thread.sleep(100);
-      }
+
+      robot.mouseMove(convertCoordinate((int)point.x, (float) screenSize.getWidth(), (int) startPoint.x, (float) defaultResolutionX), 
+        convertCoordinate((int)point.y, (float) screenSize.getHeight(), (int) startPoint.y, (float) defaultResolutionY));
+      Thread.sleep(100);
     }
     catch(InterruptedException e) {
       e.printStackTrace();

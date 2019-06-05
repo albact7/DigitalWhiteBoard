@@ -3,10 +3,9 @@ import processing.video.*;
 
 private boolean TEST_MODE=false;
 
-Capture video;
-OpenCV opencv;
+private Capture video;
 
-BoundingBoxCreator bbCreator;
+private BoundingBoxCreator bbCreator;
 
 private Board board;
 private boolean selectedColorCenter;
@@ -34,8 +33,6 @@ void setup() {
 
   fullScreen();
   video = new Capture(this, CAM_WIDTH, CAM_HEIGHT );
-
-  opencv = new OpenCV(this, CAM_WIDTH, CAM_HEIGHT);
 
   mouseManager = new MouseManager(CAM_WIDTH, CAM_HEIGHT);
   bbCreator = new BoundingBoxCreator(mouseManager);
@@ -71,7 +68,6 @@ void draw() {
   } else { // Run app
     runAppSetup();
     if (bbCreator.isDone()) { // If bounding box is defined
-      opencv.loadImage(video);
       if (selectedColorCenter && selectedColorCorner) { // If center and corner color are selected, ready to run
         runDigiboard_MODE();
       } else if (!(selectedColorCenter && selectedColorCorner)) { // Select color pointer
@@ -83,7 +79,7 @@ void draw() {
   }
 }
 
-void test_MODE() {
+private void test_MODE() {
   fill(0, 0, 0);
   textSize(100);
   text("Running tests, check console", width/4, height/2);
@@ -92,7 +88,7 @@ void test_MODE() {
   test.run();
 }
 
-void runAppSetup() {
+private void runAppSetup() {
   background(255, 255, 255);
   image(this.backgroundI, 0, 0);
   image(this.borderI, 0, 0);
@@ -100,14 +96,14 @@ void runAppSetup() {
   buttonHide();
 }
 
-void createBB_MODE() {
+private void createBB_MODE() {
   fill(0, 0, 0);
   image(video, 0, 0);
   bbCreator.display();
   helpBbox();
 }
 
-void runDigiboard_MODE() {
+private void runDigiboard_MODE() {
   image(video, 0, 0);
   board.moveOnRed(video); 
   fill(0, 0, 0);
@@ -116,7 +112,7 @@ void runDigiboard_MODE() {
   buttonShow();
 }
 
-void selectColor_MODE() {
+private void selectColor_MODE() {
   image(video, 0, 0);
   textSize(100*height*0.001-50);
   fill(0, 0, 0);
@@ -128,7 +124,7 @@ void selectColor_MODE() {
   helpColor();
 }
 
-void helpBbox() {
+private void helpBbox() {
   int step= 70;
   int start=height - 300;
   fill(0, 0, 0);
@@ -145,7 +141,7 @@ void helpBbox() {
   }
 }
 
-void helpColor() {
+private void helpColor() {
   int step= 70;
   int start=height - 300;
   textSize(60*height*0.001-20);
@@ -153,6 +149,12 @@ void helpColor() {
   text("2. click to select the color to recognize as the mouse", 130, start+step*2);
   text("3. you will have to do 2. twice, so try to move your pointer", 130, start+step*3);
   text("to a darker or lighter place", 150, start+step*4);
+  if (!this.validBB) {
+    println("painting help");
+    fill(255, 0, 0);
+    textSize(100*height*0.001-50);
+    text("Stay inside!", 200, 200);
+  }
 }
 
 void keyPressed() {
@@ -171,40 +173,51 @@ void keyPressed() {
 
 void mouseClicked() {
   if (bbCreator.isDone()) { // Afted bounding box is created, select colors
-    if (isInsideCam(mouseX, mouseY)) {
-      if (!selectedColorCenter) { // First, center color selected
+    if (!selectedColorCenter) { // First, center color selected
+      if (isInsideCam(mouseX, mouseY)) {
         color pixel = video.pixels[mouseY*640+mouseX];
         board.setColorDetectionCenter(pixel);
         selectedColorCenter=true;
-      } else if (!selectedColorCorner) { // Then, corner color selected
+        this.validBB = true;
+      } else {
+        println("out");
+        this.validBB = false;
+      }
+    } else if (!selectedColorCorner) { // Then, corner color selected
+      if (isInsideCam(mouseX, mouseY)) {
         color pixel = video.pixels[mouseY*640+mouseX];
         board.setColorDetectionCorner(pixel);
         selectedColorCorner=true;
+        this.validBB = true;
+      } else {
+        this.validBB = false;
       }
     }
   } else {
+
     this.validBB = bbCreator.onMouseClick(); // Create bounding box
     board.setConstants();
   }
 }
 
-boolean isInsideCam(int x, int y) {
+
+private boolean isInsideCam(int x, int y) {
   return ((0 <= x) && (x <= 640) && (0 <= y) && (y <= 480) );
 }
 
-void buttonHide() {
+private void buttonHide() {
   this.soundTg.hide();
   this.bboxBt.hide();
   this.colorBt.hide();
 }
 
-void buttonShow() {
+private void buttonShow() {
   this.soundTg.show();
   this.bboxBt.show();
   this.colorBt.show();
 }
 
-void buttonEvent() {
+private void buttonEvent() {
   if (this.soundTg.isPressed()) {
     mouseManager.setSoundOn();
   } else {

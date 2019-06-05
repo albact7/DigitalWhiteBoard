@@ -14,14 +14,16 @@ class Board {
   private MouseManager mouseManager;
   private static final int WAIT_FOR_CLICK=2;
   private int click[]=new int [2];
-  private int numberOfClick=0;
+  private int numberOfClick;
   private static final int WAIT_AFTER_CLICK=5 ;
-  private int waitUntilNextClick=WAIT_AFTER_CLICK;
+  private int waitUntilNextClick;
 
   private PVector lastRed;
 
   Board(MouseManager mouseManager) {
     this.mouseManager = mouseManager; 
+    this.numberOfClick=0;
+    this.waitUntilNextClick=WAIT_AFTER_CLICK;
     setConstants();
   }
 
@@ -43,7 +45,7 @@ class Board {
       );
   }
 
-  void paint(int newMouseX, int newMouseY) {
+  private void paint(int newMouseX, int newMouseY) {
     noStroke();
     strokeWeight(10);
     stroke(color(0, 255, 0));
@@ -52,7 +54,8 @@ class Board {
 
 
   void moveOnRed(Capture video) {
-    mouseManager.moveMouse(whereIsRed(video));
+    PVector result = whereIsRed(video);
+    if(result!=null) mouseManager.moveMouse(result);
   }
 
   PVector whereIsRed(Capture video) {
