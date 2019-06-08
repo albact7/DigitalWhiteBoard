@@ -3,11 +3,11 @@ import controlP5.*;
 
 class ToggleButton implements InterfaceComponent{
 
-  ControlP5 cp5;
-  Toggle tg;  
-  PImage[] imgT = {loadImage("data/sound_off.png"), loadImage("data/sound_on.png"), loadImage("data/sound_on.png")};
+  private ControlP5 cp5;
+  private Toggle tg;  
 
   public ToggleButton(processing.core.PApplet screen, boolean value, float positionX, float positionY, int sizeX, int sizeY) {
+    PImage[] imgT = {loadImage("data/sound_off.png"), loadImage("data/sound_on.png"), loadImage("data/sound_on.png")};
     for (PImage img : imgT) {
       img.resize(sizeX, sizeY);
     }
@@ -18,7 +18,7 @@ class ToggleButton implements InterfaceComponent{
     tg.setPosition(positionX, positionY);
     tg.setValue(value);
     tg.setMode(ControlP5.SWITCH);  
-    tg.setImages(this.imgT);
+    tg.setImages(imgT);
     tg.setSize(sizeX, sizeY);
   }
 
