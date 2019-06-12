@@ -1,7 +1,5 @@
 import arb.soundcipher.*;
 
-
-
 class MouseManager {
 
   private Robot robot;

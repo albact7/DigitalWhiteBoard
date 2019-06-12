@@ -1,7 +1,6 @@
-import gab.opencv.*;
 import processing.video.*;
 
-private boolean TEST_MODE=false;
+private boolean TEST_MODE=false; // Change this variable to "true" to run in test mode
 
 private Capture video;
 
@@ -83,7 +82,6 @@ private void test_MODE() {
   fill(0, 0, 0);
   textSize(100);
   text("Running tests, check console", width/4, height/2);
-  delay(1000);
   Test test = new Test();
   test.run();
 }
@@ -150,7 +148,6 @@ private void helpColor() {
   text("3. you will have to do 2. twice, so try to move your pointer", 130, start+step*3);
   text("to a darker or lighter place", 150, start+step*4);
   if (!this.validBB) {
-    println("painting help");
     fill(255, 0, 0);
     textSize(100*height*0.001-50);
     text("Stay inside!", 200, 200);

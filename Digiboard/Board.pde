@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.util.Random;
+import java.util.Random; //BOrrar
 class Board {
 
   private int resolutionX;
@@ -55,7 +55,7 @@ class Board {
 
   void moveOnRed(Capture video) {
     PVector result = whereIsRed(video);
-    if(result!=null) mouseManager.moveMouse(result);
+    if (result!=null) mouseManager.moveMouse(result);
   }
 
   PVector whereIsRed(Capture video) {

@@ -1,7 +1,6 @@
 import controlP5.*;
 
-
-class ToggleButton implements InterfaceComponent{
+class ToggleButton implements InterfaceComponent {
 
   private ControlP5 cp5;
   private Toggle tg;  

@@ -15,6 +15,7 @@ class Test {
     areAllNearColors();
     areSamePlace();
     convertCoordinate();
+    println("All tests passed succesfully");
     exit();
   }
 
